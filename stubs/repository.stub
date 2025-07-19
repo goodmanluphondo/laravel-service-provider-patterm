@@ -1,0 +1,15 @@
+<?php
+
+namespace {{namespace}};
+
+use {{interfaceNamespace}};
+use {{modelNamespace}};
+use {{baseRepository}};
+
+class {{class}} extends {{baseRepositoryClass}} implements {{inferface}}
+{
+    public function __construct({{ModelName}} ${{modelName}})
+    {
+        parent::__construct(${{modelName}});
+    }
+}
