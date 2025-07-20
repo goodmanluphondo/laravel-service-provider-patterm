@@ -29,11 +29,20 @@
             "GoodmanLuphondo\\LaravelServiceRepositoryPattern\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "GoodmanLuphondo\\LaravelServiceRepositoryPattern\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "GoodmanLuphondo\\LaravelServiceRepositoryPattern\\Providers\\ServiceRepositoryPatternServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.4",
+        "phpunit/phpunit": "^12.2"
     }
 }
