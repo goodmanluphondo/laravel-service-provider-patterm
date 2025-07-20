@@ -1,22 +1,31 @@
 {
     "name": "goodmanluphondo/laravel-service-repository-pattern",
-    "description": "A simple package to help with Service-Repository pattern in your Laravel application",
+    "description": "Service-Repository pattern for your Laravel applications",
     "type": "library",
-    "require": {
-        "illuminate/support": "^12.0",
-        "illuminate/database": "^12.0",
-        "illuminate/console": "^12.0"
-    },
+    "keywords": [
+        "laravel",
+        "service-repository",
+        "pattern",
+        "repository",
+        "service",
+        "pattern",
+        "clean-architecture"
+    ],
     "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "GoodmanLuphondo\\LaravelServiceRepositoryPattern\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Goodman Luphondo",
             "email": "luphondog@icloud.com"
         }
-    ]
+    ],
+    "require": {
+        "illuminate/support": "^12.0",
+        "illuminate/database": "^12.0",
+        "illuminate/console": "^12.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "GoodmanLuphondo\\LaravelServiceRepositoryPattern\\": "src/"
+        }
+    }
 }
