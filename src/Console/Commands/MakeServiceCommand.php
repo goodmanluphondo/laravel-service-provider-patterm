@@ -75,23 +75,51 @@ class MakeServiceCommand extends Command
         }
 
         $subNamespace = $modelPathData['sub_namespace'];
-        $modelNamePlural = $subNamespace;
+        $modelNamePlural = $subNamespace ?: Str::plural($modelName);
         $modelNameSingular = $modelName;
         $modelNameCamel = Str::camel($modelNameSingular);
 
+        $interfacePath = $subNamespace 
+            ? "app/Interfaces/{$subNamespace}/{$modelNameSingular}RepositoryInterface.php"
+            : "app/Interfaces/{$modelNameSingular}RepositoryInterface.php";
+        
+        $interfaceNamespace = $subNamespace 
+            ? "App\\Interfaces\\{$subNamespace}"
+            : "App\\Interfaces";
+        
+        $repositoryPath = $subNamespace 
+            ? "app/Repositories/{$subNamespace}/{$modelNameSingular}Repository.php"
+            : "app/Repositories/{$modelNameSingular}Repository.php";
+            
+        $repositoryNamespace = $subNamespace 
+            ? "App\\Repositories\\{$subNamespace}"
+            : "App\\Repositories";
+            
+        $servicePath = $subNamespace 
+            ? "app/Services/{$subNamespace}/{$modelNameSingular}Service.php"
+            : "app/Services/{$modelNameSingular}Service.php";
+            
+        $serviceNamespace = $subNamespace 
+            ? "App\\Services\\{$subNamespace}"
+            : "App\\Services";
+            
+        $modelNamespace = $subNamespace 
+            ? "App\\Models\\{$subNamespace}\\{$modelNameSingular}"
+            : "App\\Models\\{$modelNameSingular}";
+
         $interfaceName = "{$modelNameSingular}RepositoryInterface";
-        $this->createFromStub('repository.interface.stub', "app/Interfaces/{$subNamespace}/{$interfaceName}.php", [
-            '{{namespace}}' => "App\\Interfaces\\{$subNamespace}",
+        $this->createFromStub('repository.interface.stub', $interfacePath, [
+            '{{namespace}}' => $interfaceNamespace,
             '{{baseInterfaceNamespace}}' => 'App\\Interfaces\\BaseInterface',
             '{{class}}' => $interfaceName,
             '{{baseInterface}}' => 'BaseInterface',
         ]);
 
         $repositoryName = "{$modelNameSingular}Repository";
-        $this->createFromStub('repository.stub', "app/Repositories/{$subNamespace}/{$repositoryName}.php", [
-            '{{namespace}}' => "App\\Repositories\\{$subNamespace}",
-            '{{interfaceNamespace}}' => "App\\Interfaces\\{$subNamespace}\\{$interfaceName}",
-            '{{modelNamespace}}' => "App\\Models\\{$subNamespace}\\{$modelNameSingular}",
+        $this->createFromStub('repository.stub', $repositoryPath, [
+            '{{namespace}}' => $repositoryNamespace,
+            '{{interfaceNamespace}}' => "{$interfaceNamespace}\\{$interfaceName}",
+            '{{modelNamespace}}' => $modelNamespace,
             '{{baseRepository}}' => 'App\\Repositories\\Repository',
             '{{class}}' => $repositoryName,
             '{{baseRepositoryClass}}' => 'Repository',
@@ -100,8 +128,8 @@ class MakeServiceCommand extends Command
             '{{modelName}}' => $modelNameCamel,
         ]);
 
-        $this->createFromStub('service.stub', "app/Services/{$subNamespace}/{$modelNameSingular}Service.php", [
-            '{{namespace}}' => "App\\Services\\{$subNamespace}",
+        $this->createFromStub('service.stub', $servicePath, [
+            '{{namespace}}' => $serviceNamespace,
             '{{ModelNamePlural}}' => $modelNamePlural,
             '{{ModelName}}' => $modelNameSingular,
             '{{modelName}}' => $modelNameCamel,
@@ -132,6 +160,14 @@ class MakeServiceCommand extends Command
 
     protected function findModel(string $modelName)
     {
+        $rootPath = $this->laravel->basePath("app/Models/{$modelName}.php");
+        if ($this->files->exists($rootPath)) {
+            return [
+                'path' => $rootPath,
+                'sub_namespace' => '',
+            ];
+        }
+
         $modelDirectories = $this->files->directories($this->laravel->basePath('app/Models'));
         foreach ($modelDirectories as $dir) {
             $path = "{$dir}/{$modelName}.php";
@@ -142,6 +178,7 @@ class MakeServiceCommand extends Command
                 ];
             }
         }
+        
         return null;
     }
     
@@ -174,8 +211,13 @@ class MakeServiceCommand extends Command
         $interface = "{$modelName}RepositoryInterface";
         $repository = "{$modelName}Repository";
         
-        $interfaceNamespace = "App\\Interfaces\\{$subNamespace}\\{$interface}";
-        $repositoryNamespace = "App\\Repositories\\{$subNamespace}\\{$repository}";
+        $interfaceNamespace = $subNamespace 
+            ? "App\\Interfaces\\{$subNamespace}\\{$interface}"
+            : "App\\Interfaces\\{$interface}";
+            
+        $repositoryNamespace = $subNamespace 
+            ? "App\\Repositories\\{$subNamespace}\\{$repository}"
+            : "App\\Repositories\\{$repository}";
 
         $useStatements = "use {$interfaceNamespace};\nuse {$repositoryNamespace};";
         
