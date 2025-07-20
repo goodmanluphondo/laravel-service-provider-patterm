@@ -224,8 +224,8 @@ class PostController extends Controller
 
 ## Requirements
 
-- PHP 8.1 or higher
-- Laravel 11.0 or higher
+- PHP 8.0 or higher
+- Laravel 9.0 or higher
 
 ## License
 
