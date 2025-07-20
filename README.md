@@ -87,7 +87,7 @@ return [
 Use the `make:service` command to create a new service class:
 
 ```bash
-php artisan make:service UserService
+php artisan make:service User
 ```
 
 This creates `app/Services/UserService.php`.
@@ -114,10 +114,10 @@ This command will:
 For services not tied to a model that need sub-namespace organization:
 
 ```bash
-php artisan make:service Integrations\\PaymentService
+php artisan make:service Integrations\\Payment
 ```
 
-This creates `app/Services/Integrations/PaymentServiceService.php`.
+This creates `app/Services/Integrations/PaymentService.php`.
 
 ## Generated Structure
 
