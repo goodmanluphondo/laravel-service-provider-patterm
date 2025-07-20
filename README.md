@@ -1,29 +1,57 @@
 # Laravel Service-Repository Pattern
 
+[![Latest Stable Version](https://poser.pugx.org/goodmanluphondo/laravel-service-repository-pattern/v/stable)](https://packagist.org/packages/goodmanluphondo/laravel-service-repository-pattern)
+[![Total Downloads](https://poser.pugx.org/goodmanluphondo/laravel-service-repository-pattern/downloads)](https://packagist.org/packages/goodmanluphondo/laravel-service-repository-pattern)
+[![License](https://poser.pugx.org/goodmanluphondo/laravel-service-repository-pattern/license)](https://packagist.org/packages/goodmanluphondo/laravel-service-repository-pattern)
+
 A Laravel package that helps you implement the Service-Repository pattern in your Laravel applications. This package provides base classes and Artisan commands to quickly scaffold repositories, interfaces, and services following clean architecture principles.
 
-## Features
+> **Note:** This package enforces separation of concerns between data access and business logic. Use it to maintain clean, testable, and maintainable code architecture.
 
-- 🏗️ **Scaffolding Commands**: Generate services, repositories, and interfaces with a single command
-- 🔧 **Base Classes**: Pre-built base repository and service classes with common CRUD operations
-- 🎯 **Clean Architecture**: Enforces separation of concerns between data access and business logic
-- 📁 **Namespace Support**: Supports sub-namespaces for better organization
-- 🔗 **Automatic Binding**: Automatically registers repository interfaces with their implementations
+This package includes the following features:
+
+- **Scaffolding Commands**: Generate services, repositories, and interfaces with a single command
+- **Base Classes**: Pre-built base repository and service classes with common CRUD operations
+- **Clean Architecture**: Enforces separation of concerns between data access and business logic
+- **Namespace Support**: Supports sub-namespaces for better organization
+- **Automatic Binding**: Automatically registers repository interfaces with their implementations
 
 ## Installation
 
-Install the package via Composer:
+Require this package with composer:
 
 ```bash
 composer require goodmanluphondo/laravel-service-repository-pattern
 ```
 
-## Setup
+Laravel uses Package Auto-Discovery, so doesn't require you to manually add the ServiceProvider.
+
+### Laravel without auto-discovery:
+
+If you don't use auto-discovery, add the ServiceProvider to the providers list. For Laravel 11 or newer, add the ServiceProvider in `bootstrap/providers.php`. For Laravel 10 or older, add the ServiceProvider in `config/app.php`.
+
+```php
+// config/app.php (Laravel 10 and older)
+'providers' => [
+    // Other providers...
+    GoodmanLuphondo\LaravelServiceRepositoryPattern\Providers\ServiceRepositoryPatternServiceProvider::class,
+],
+
+// bootstrap/providers.php (Laravel 11+)
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    GoodmanLuphondo\LaravelServiceRepositoryPattern\Providers\ServiceRepositoryPatternServiceProvider::class,
+];
+```
+
+### Publish the base files
 
 After installation, publish the base files to your application:
 
 ```bash
-php artisan vendor:publish --tag=service-repository
+php artisan vendor:publish --tag=service-repository-pattern
 ```
 
 This will publish:
@@ -32,13 +60,24 @@ This will publish:
 - `app/Repositories/Repository.php` - Base repository implementation
 - `app/Providers/RepositoryServiceProvider.php` - Service provider for binding interfaces
 
-Register the `RepositoryServiceProvider` in your `config/app.php`:
+### Register the Repository Service Provider
+
+After publishing, add the `RepositoryServiceProvider` (this is the published file that binds your repository interfaces) to your `config/app.php` (for Laravel 10 and older) or `bootstrap/providers.php` (for Laravel 11+):
 
 ```php
+// config/app.php (Laravel 10 and older)
 'providers' => [
     // Other providers...
     App\Providers\RepositoryServiceProvider::class,
 ],
+
+// bootstrap/providers.php (Laravel 11+)
+<?php
+
+return [
+    App\Providers\AppServiceProvider::class,
+    App\Providers\RepositoryServiceProvider::class,
+];
 ```
 
 ## Usage
@@ -63,22 +102,22 @@ php artisan make:service Post -R
 
 This command will:
 
-1. Create `app/Interfaces/Posts/PostRepositoryInterface.php`
-2. Create `app/Repositories/Posts/PostRepository.php`
-3. Create `app/Services/Posts/PostService.php`
+1. Create `app/Interfaces/PostRepositoryInterface.php` (or `app/Interfaces/Posts/PostRepositoryInterface.php` for sub-namespaced models)
+2. Create `app/Repositories/PostRepository.php` (or `app/Repositories/Posts/PostRepository.php` for sub-namespaced models)
+3. Create `app/Services/PostService.php` (or `app/Services/Posts/PostService.php` for sub-namespaced models)
 4. Automatically bind the interface to the repository in `RepositoryServiceProvider`
 
-**Note**: The model (`app/Models/Posts/Post.php`) must exist before running this command.
+> **Important:** The model must exist before running this command. The command supports both root models (`app/Models/User.php`) and sub-namespaced models (`app/Models/Blog/Post.php`).
 
 ### Using Sub-namespaces
 
 For services not tied to a model that need sub-namespace organization:
 
 ```bash
-php artisan make:service Integrations\\Integration
+php artisan make:service Integrations\\PaymentService
 ```
 
-This creates `app/Services/Integrations/IntegrationService.php`.
+This creates `app/Services/Integrations/PaymentServiceService.php`.
 
 ## Generated Structure
 
@@ -89,7 +128,7 @@ When using the `-R` flag, the generated files follow this structure:
 ```php
 <?php
 
-namespace App\Interfaces\Posts;
+namespace App\Interfaces;
 
 use App\Interfaces\BaseInterface;
 
@@ -104,10 +143,10 @@ interface PostRepositoryInterface extends BaseInterface
 ```php
 <?php
 
-namespace App\Repositories\Posts;
+namespace App\Repositories;
 
-use App\Interfaces\Posts\PostRepositoryInterface;
-use App\Models\Posts\Post;
+use App\Interfaces\PostRepositoryInterface;
+use App\Models\Post;
 use App\Repositories\Repository;
 
 class PostRepository extends Repository implements PostRepositoryInterface
@@ -124,9 +163,9 @@ class PostRepository extends Repository implements PostRepositoryInterface
 ```php
 <?php
 
-namespace App\Services\Posts;
+namespace App\Services;
 
-use App\Interfaces\Posts\PostRepositoryInterface;
+use App\Interfaces\PostRepositoryInterface;
 
 class PostService
 {
@@ -140,16 +179,18 @@ class PostService
 
 The base repository provides these methods out of the box:
 
-- `query()` - Get a query builder instance
-- `find($id)` - Find a model by ID (throws exception if not found)
-- `findAll()` - Get all models
-- `create(array $data)` - Create a new model
-- `update($id, array $data)` - Update a model by ID
-- `delete($id)` - Delete a model by ID
-- `firstOrCreate(array $data)` - Get first matching model or create new one
-- `firstWhere(string $column, $value)` - Get first model matching condition
-- `where(string $column, $value)` - Add where condition to query
-- `orderBy(string $column, string $direction = 'asc')` - Add order by to query
+| Method                                               | Description                                        |
+| ---------------------------------------------------- | -------------------------------------------------- |
+| `query()`                                            | Get a query builder instance                       |
+| `find($id)`                                          | Find a model by ID (throws exception if not found) |
+| `findAll()`                                          | Get all models                                     |
+| `create(array $data)`                                | Create a new model                                 |
+| `update($id, array $data)`                           | Update a model by ID                               |
+| `delete($id)`                                        | Delete a model by ID                               |
+| `firstOrCreate(array $data)`                         | Get first matching model or create new one         |
+| `firstWhere(string $column, $value)`                 | Get first model matching condition                 |
+| `where(string $column, $value)`                      | Add where condition to query                       |
+| `orderBy(string $column, string $direction = 'asc')` | Add order by to query                              |
 
 ## Example Usage in Controller
 
@@ -158,7 +199,7 @@ The base repository provides these methods out of the box:
 
 namespace App\Http\Controllers;
 
-use App\Services\Posts\PostService;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
