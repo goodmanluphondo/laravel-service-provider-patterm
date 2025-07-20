@@ -1,6 +1,6 @@
 <?php
 
-namespace GoodmanLuphondo\LaravelServiceRepositoryPattern\Interfaces;
+namespace App\Interfaces;
 
 interface BaseInterface
 {

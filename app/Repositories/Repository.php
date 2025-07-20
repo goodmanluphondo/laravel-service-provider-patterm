@@ -1,8 +1,8 @@
 <?php
 
-namespace GoodmanLuphondo\LaravelServiceRepositoryPattern\Repositories;
+namespace App\Repositories;
 
-use GoodmanLuphondo\LaravelServiceRepositoryPattern\Interfaces\BaseInterface;
+use App\Interfaces\BaseInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 

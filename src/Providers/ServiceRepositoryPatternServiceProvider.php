@@ -22,9 +22,9 @@ class ServiceRepositoryPatternServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__.'/../../stubs' => $this->app->basePath('stubs'),
-            __DIR__.'/../Interfaces/BaseInterface.php' => $this->app->basePath('app/Interfaces/BaseInterface.php'),
-            __DIR__.'/../Repositories/Repository.php' => $this->app->basePath('app/Repositories/Repository.php'),
-            __DIR__.'/RepositoryServiceProvider.php' => $this->app->basePath('app/Providers/RepositoryServiceProvider.php'),
+            __DIR__.'/../../app/Interfaces/BaseInterface.php' => $this->app->basePath('app/Interfaces/BaseInterface.php'),
+            __DIR__.'/../../app/Repositories/Repository.php' => $this->app->basePath('app/Repositories/Repository.php'),
+            __DIR__.'/../../app/Providers/RepositoryServiceProvider.php' => $this->app->basePath('app/Providers/RepositoryServiceProvider.php'),
         ], 'service-repository-pattern');
 
         if ($this->app->runningInConsole()) {

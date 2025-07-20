@@ -1,6 +1,6 @@
 <?php
 
-namespace GoodmanLuphondo\LaravelServiceRepositoryPattern\Providers;
+namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
