@@ -2,7 +2,7 @@
 
 namespace {{namespace}};
 
-use App\Interfaces\{{ModelNamePlural}}\{{ModelName}}RepositoryInterface;
+use {{interfaceNamespace}};
 
 class {{ModelName}}Service
 {

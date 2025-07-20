@@ -133,6 +133,7 @@ class MakeServiceCommand extends Command
             '{{ModelNamePlural}}' => $modelNamePlural,
             '{{ModelName}}' => $modelNameSingular,
             '{{modelName}}' => $modelNameCamel,
+            '{{interfaceNamespace}}' => "{$interfaceNamespace}\\{$interfaceName}",
         ]);
         
         $this->updateRepositoryServiceProvider($modelNameSingular, $subNamespace);
