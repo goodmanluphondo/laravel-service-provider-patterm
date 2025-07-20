@@ -79,7 +79,6 @@ class MakeServiceCommand extends Command
         $modelNameSingular = $modelName;
         $modelNameCamel = Str::camel($modelNameSingular);
 
-        // Create Interface
         $interfaceName = "{$modelNameSingular}RepositoryInterface";
         $this->createFromStub('repository.interface.stub', "app/Interfaces/{$subNamespace}/{$interfaceName}.php", [
             '{{namespace}}' => "App\\Interfaces\\{$subNamespace}",
@@ -88,7 +87,6 @@ class MakeServiceCommand extends Command
             '{{baseInterface}}' => 'BaseInterface',
         ]);
 
-        // Create Repository
         $repositoryName = "{$modelNameSingular}Repository";
         $this->createFromStub('repository.stub', "app/Repositories/{$subNamespace}/{$repositoryName}.php", [
             '{{namespace}}' => "App\\Repositories\\{$subNamespace}",
@@ -102,7 +100,6 @@ class MakeServiceCommand extends Command
             '{{modelName}}' => $modelNameCamel,
         ]);
 
-        // Create Service
         $this->createFromStub('service.stub', "app/Services/{$subNamespace}/{$modelNameSingular}Service.php", [
             '{{namespace}}' => "App\\Services\\{$subNamespace}",
             '{{ModelNamePlural}}' => $modelNamePlural,
@@ -110,7 +107,6 @@ class MakeServiceCommand extends Command
             '{{modelName}}' => $modelNameCamel,
         ]);
         
-        // Bind in Service Provider
         $this->updateRepositoryServiceProvider($modelNameSingular, $subNamespace);
     }
 
@@ -181,17 +177,14 @@ class MakeServiceCommand extends Command
         $interfaceNamespace = "App\\Interfaces\\{$subNamespace}\\{$interface}";
         $repositoryNamespace = "App\\Repositories\\{$subNamespace}\\{$repository}";
 
-        // Add use statements
         $useStatements = "use {$interfaceNamespace};\nuse {$repositoryNamespace};";
         
-        // Add the use statements right after the namespace declaration.
         $content = preg_replace(
             '/(namespace App\\\Providers;)/', 
             "$1\n{$useStatements}", 
             $content
         );
 
-        // Add binding
         $binding = "\$this->app->bind({$interface}::class, {$repository}::class);";
         $content = preg_replace('/(public function boot\(\): void\n\s*\{\n)/', "$1        {$binding}\n", $content);
 
