@@ -21,12 +21,11 @@ class ServiceRepositoryPatternServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->publishes([
-            __DIR__.'/../stubs' => $this->app->basePath('stubs'),
-            __DIR__.'/../Console/Commands/MakeServiceCommand.php' => $this->app->basePath('app/Console/Commands/MakeServiceCommand.php'),
+            __DIR__.'/../../stubs' => $this->app->basePath('stubs'),
             __DIR__.'/../Interfaces/BaseInterface.php' => $this->app->basePath('app/Interfaces/BaseInterface.php'),
             __DIR__.'/../Repositories/Repository.php' => $this->app->basePath('app/Repositories/Repository.php'),
-            __DIR__.'/ServiceRepositoryPatternServiceProvider.php' => $this->app->basePath('app/Providers/ServiceRepositoryPatternServiceProvider.php'),
-        ], 'service-repository');
+            __DIR__.'/RepositoryServiceProvider.php' => $this->app->basePath('app/Providers/RepositoryServiceProvider.php'),
+        ], 'service-repository-pattern');
 
         if ($this->app->runningInConsole()) {
             $this->commands([MakeServiceCommand::class]);
